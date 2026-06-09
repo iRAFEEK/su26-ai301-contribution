@@ -1,15 +1,15 @@
 # Contribution [#]: [Issue Title]
 
 **Contribution Number:** [1 / 2 / 3]  
-**Student:** [Your Name]  
-**Issue:** [GitHub issue link]  
-**Status:** [Phase I / Phase II / Phase III / Phase IV] [In Progress / Complete]
+**Student:** [Rafeek Hanna]  
+**Issue:** [[GitHub issue link](https://github.com/wso2/product-is/issues/23288)]  
+**Status:** [Phase I] [Complete]
 
 ---
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs explaining why this issue interests you, how it matches your skills/learning goals, what you hope to learn]
+[The "Back to sign in" link on the WSO2 Identity Server self-registration page fails with a 400 error because the `claims` JSON parameter in the callback URL is not URL-encoded. I chose this issue because it has clear reproduction steps, a bounded scope, and involves frontend URL handling which matches my web development background. The issue is labeled for new contributors and has active maintainer engagement.]
 
 ---
 
@@ -17,15 +17,15 @@
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+[When a user clicks "Register" on an organization's My Account page and then clicks "Sign in" to go back, the server returns 400 Bad Request because the `claims` parameter contains raw JSON characters (`{`, `}`, `"`, `:`) that are not percent-encoded.]
 
 ### Expected Behavior
 
-[What should happen?]
+[The "Back to sign in" link should redirect to the login page successfully with the claims parameter properly encoded.]
 
 ### Current Behavior
 
-[What actually happens?]
+[The link fails with HTTP 400 due to malformed query parameters.]
 
 ### Affected Components
 
