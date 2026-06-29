@@ -42,9 +42,10 @@ Challenges I faced and solved:
 5. Observed result: **HTTP 400** — the URL contains raw `claims={"userinfo":...}`.
 
 ### Reproduction Evidence
-- Commit/branch: `fix-url-encoding-claims` on my fork → PR #10382.
-- Screenshots/recordings: before/after screen recordings (400 → 200) attached to the PR description.
-- My findings: verified at the HTTP level that raw `claims={...}` → 400 while percent-encoded `claims=%7B...` → 200, confirming the root cause is missing URL-encoding.
+- **Working branch:** https://github.com/iRAFEEK/identity-apps/tree/fix-url-encoding-claims
+- **Pull Request:** https://github.com/wso2/identity-apps/pull/10382
+- **Screenshots/recordings:** before/after screen recordings (400 → 200) in the PR description.
+- **My findings:** verified at the HTTP level that raw `claims={...}` → 400 while percent-encoded `claims=%7B...` → 200, confirming the root cause is the missing URL-encoding.
 
 ## Solution Approach
 
