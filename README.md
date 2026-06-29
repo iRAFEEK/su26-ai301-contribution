@@ -103,11 +103,14 @@ Opened PR #10382, addressed maintainer feedback (concise changeset, before/after
 
 **PR Description:** Purpose → Problem → Solution → Changed File → Verification (with before/after videos). References the issue with `Fixes wso2/product-is#23288`.
 
-**Maintainer Feedback:** (replace dates with the exact ones from the PR timeline)
-- [date]: CodeRabbit — validation block could double-encode the callback. → Verified `isValidMultiOptionURI` ignores the query; removed the redundant `getURLEncodedCallback()` (`8cd7ff6`); bot confirmed resolved.
-- [date]: @pavinduLakshan — keep the changeset description concise. → Trimmed to a one-line release note (`8cd7ff6`).
-- [date]: @pavinduLakshan — add a screen recording; address the CodeRabbit comments. → Added before/after recording; CodeRabbit resolved.
-- [date]: @pavinduLakshan — did you test on latest master? the bug may already be fixed there. → Replied honestly: tested released packs (7.1.0/7.3.0); on 7.3.0 the normal flow routes through the already-fixed `username-request.jsp`, so the user-facing 400 doesn't reproduce — the buggy line in `with-verification.jsp` is reachable only via direct render. Offered to close if that page is unused; asked him to confirm.
+**Maintainer Feedback:**
+- 2026-05-23: CodeRabbit — validation block could double-encode the callback. → Verified `isValidMultiOptionURI` ignores the query; removed the redundant `getURLEncodedCallback()` (`8cd7ff6`); bot confirmed resolved.
+- 2026-05-23: @pavinduLakshan — keep the changeset description concise. → Trimmed to a one-line release note (`8cd7ff6`).
+- 2026-05-23: @pavinduLakshan — add a screen recording; address the CodeRabbit comments. → Added before/after recording (400 → 200); CodeRabbit resolved.
+- 2026-05-30: @pavinduLakshan — did you test on latest master? the bug may already be fixed there. → Replied honestly: tested released packs (7.1.0/7.3.0); on 7.3.0 the normal flow routes through the already-fixed `username-request.jsp`, so the user-facing 400 doesn't reproduce — the buggy line in `with-verification.jsp` is reachable only via direct render. Offered to close if that page is unused; asked him to confirm.
+
+**Status:** Review-ready; in review (awaiting maintainer approval). Last maintainer activity ~2 weeks ago (2026-05-30); no reply since my response.
+s unused; asked him to confirm.
 
 **Status:** Review-ready; in review (awaiting maintainer approval).
 
