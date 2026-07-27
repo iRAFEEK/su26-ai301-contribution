@@ -1,8 +1,8 @@
 # Contribution #1: Fix URL encoding for `claims` parameter in self-registration redirect
 
-**Contribution Number:** 1
-**Student:** Rafeek Hanna
-**Issue:** https://github.com/wso2/product-is/issues/23288
+**Contribution Number:** 1  
+**Student:** Rafeek Hanna  
+**Issue:** https://github.com/wso2/product-is/issues/23288  
 **Status:** Phase IV — Submitted & In Review
 
 ## Why I Chose This Issue
@@ -98,6 +98,29 @@ Opened PR #10382, addressed maintainer feedback (concise changeset, before/after
 - Key commits: `8cd7ff6` (final; +9/−4 across 2 files).
 - Approach decisions: reused the existing `encodeURL` pattern; validated the encoded value directly to avoid double-encoding.
 
+### Key Design Decision
+
+The fix wraps the callback URL read at line 107 with `IdentityManagementEndpointUtil.encodeURL()` before HTML-attribute encoding — matching the identical pattern already applied in the sibling file `self-registration-username-request.jsp:116`. The choice of this utility over Java's `URLEncoder.encode()` directly was deliberate: `URLEncoder.encode(url, "UTF-8")` encodes the entire string including URL structure delimiters (`?`, `=`, `&`), producing an unusable blob rather than a valid URL. `encodeURL()` scopes encoding to query parameter values only, preserving URL structure.
+
+### Edge Cases and Alternatives Considered
+
+**Alternative 1: Fix at the server-side validation layer.**
+Rather than encoding at the JSP read site, malformed callbacks (those with raw JSON) could be rejected at the server. Rejected: this would break valid callbacks from callers that don't know encoding is required at this layer, and it treats the symptom rather than the root cause. The correct fix is encoding at the point of reading, not blocking at the point of validation.
+
+**Alternative 2: Apply encoding client-side via JavaScript.**
+A `<script>` block could reconstruct the "Sign in" `href` using `encodeURIComponent()` at click time. Rejected: this page is entirely server-rendered with no client-side JavaScript over the link element. Introducing a JS layer to handle encoding would be a scope expansion beyond the issue boundaries, and server-side encoding is cleaner and more reliable anyway.
+
+**Alternative 3: Fix at the callback generation layer upstream.**
+The cleanest systemic fix would encode the `claims` JSON at the point where the `callback` URL is first assembled — the servlet or filter that issues the self-registration redirect. This would prevent malformed callbacks from entering the JSP layer at all. Rejected for this PR: it requires tracing and modifying multiple entry points across the codebase. The minimal, targeted fix at the JSP read site matches the project's established pattern (`username-request.jsp:116`) and is the change most likely to be reviewed and merged quickly.
+
+**Double-encoding edge case (critical):**
+The first implementation also applied `getURLEncodedCallback()` in the validation block at lines 194–199. CodeRabbit flagged a double-encoding risk: if the incoming `callback` already contains percent-encoded characters, a second pass through `encodeURL()` re-encodes the `%` sign itself (`%7B` → `%257B`). I verified this against the `isValidMultiOptionURI()` source — the function validates only scheme, host, and path, making it safe to call on an already-encoded URL. Removed `getURLEncodedCallback()` from the validation block in commit `8cd7ff6` to eliminate the double-encoding path. CodeRabbit re-reviewed and confirmed the issue resolved.
+
+**Null/empty callback edge case:**
+`request.getParameter("callback")` returns `null` when the parameter is absent. The existing null check at line 194 guards against this before the callback reaches `encodeURL()`, so there is no NPE risk. When `callback` is an empty string, `encodeURL()` returns an empty string cleanly, and the link renders with an empty `href` — the same behavior as before the fix.
+
+---
+
 ## Pull Request
 
 **PR Link:** https://github.com/wso2/identity-apps/pull/10382
@@ -111,9 +134,8 @@ Opened PR #10382, addressed maintainer feedback (concise changeset, before/after
 - 2026-05-30: @pavinduLakshan — did you test on latest master? the bug may already be fixed there. → Replied honestly: tested released packs (7.1.0/7.3.0); on 7.3.0 the normal flow routes through the already-fixed `username-request.jsp`, so the user-facing 400 doesn't reproduce — the buggy line in `with-verification.jsp` is reachable only via direct render. Offered to close if that page is unused; asked him to confirm.
 
 **Status:** Review-ready; in review (awaiting maintainer approval). Last maintainer activity ~2 weeks ago (2026-05-30); no reply since my response.
-s unused; asked him to confirm.
 
-**Status:** Review-ready; in review (awaiting maintainer approval).
+---
 
 ## Learnings & Reflections
 
